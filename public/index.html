@@ -19,12 +19,35 @@
         const CommentBox = React.createClass({
             render: function () {
                 return (
-                    <div className="comment box">
+                    <div className="commentBox">
                         Hellooooo world
+                        <h1>Comments</h1>
+                        <CommentList />
+                        <CommentForm />
                     </div>
                 );
             }
         });
+        
+        const CommentList = React.createClass({
+            render: function () {
+                return (
+                    <div className="commentList">
+                        comment list
+                    </div>
+                );
+            }
+        });
+        
+        const CommentForm = function () {
+            render: function () {
+                return (
+                    <div className="commentForm">
+                        comment form
+                    </div>
+                );
+            }
+        }
         
         ReactDOM.render(
             <CommentBox />,
