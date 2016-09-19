@@ -45,6 +45,7 @@
                 */
                 
                 this.serverRequest = $.get(this.props.source, function (data) {
+                    console.log('in componentDidMount ajax: ', data);
                     this.props.data = data[0];
                 })
             },
