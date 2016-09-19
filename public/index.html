@@ -26,9 +26,24 @@
         */
         
         const CommentBox = React.createClass({
-            $.get("http://cjohnson.ignorelist.com/api/comments", function (data) {
-                this.props.data = data[0];
-            })
+            getInitialState: function () {
+                return {
+                    this.props.data: {}
+                };
+            },
+            
+            componentDidMount: function () {
+                this.serverRequest = $.get(this.props.source, function (data) {
+                    this.setState({
+                        this.props.data: data[0]
+                    });
+                    this.props.data = data[0];
+                }.bind(this)),
+            },
+            
+            componentWillUnmount: function () {
+                this.serverRequest.abort();
+            }
         
             render: function () {
                 return (
@@ -93,7 +108,7 @@
         });
         
         ReactDOM.render(
-            <CommentBox />,
+            <CommentBox source="http://cjohnson.ignorelist.com/api/comments"/>,
             document.getElementById('content')
         );
       // To get started with this tutorial running your own code, simply remove
