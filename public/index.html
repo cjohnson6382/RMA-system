@@ -34,6 +34,8 @@
                 return (
                     <div className="commentList">
                         comment list
+                        <Comment author="derpderpderp">Fuuuuu</Comment>
+                        <Comment author="predpredpred">RUUUUUU</Comment>
                     </div>
                 );
             }
@@ -44,6 +46,19 @@
                 return (
                     <div className="commentForm">
                         comment form
+                    </div>
+                );
+            }
+        });
+        
+        const Comment = React.createClass({
+            render: function () {
+                return (
+                    <div className="comment">
+                        <h2> className="commentAuthor">
+                            {this.props.author}
+                        </h2>
+                        {this.props.children}
                     </div>
                 );
             }
