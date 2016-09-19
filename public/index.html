@@ -26,19 +26,27 @@
         */
         
         const CommentBox = React.createClass({
+            /*
             getInitialState: function () {
                 return {
                     this.props.data: {}
                 };
             },
+            */
             
             componentDidMount: function () {
+                /*
                 this.serverRequest = $.get(this.props.source, function (data) {
                     this.setState({
                         this.props.data: data[0]
                     });
                     this.props.data = data[0];
-                }.bind(this)),
+                }.bind(this));
+                */
+                
+                this.serverRequest = $.get(this.props.source, function (data) {
+                    this.props.data = data[0];
+                })
             },
             
             componentWillUnmount: function () {
