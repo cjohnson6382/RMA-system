@@ -39,7 +39,7 @@
             }
         });
         
-        const CommentForm = function () {
+        const CommentForm = React.createClass({
             render: function () {
                 return (
                     <div className="commentForm">
@@ -47,7 +47,7 @@
                     </div>
                 );
             }
-        }
+        });
         
         ReactDOM.render(
             <CommentBox />,
