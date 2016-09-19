@@ -20,7 +20,7 @@
         const CommentBox = React.createClass({
             handleCommentSubmit: function (comment) {
             
-                $.post(this.props.url, comment, function (data) {
+                $.post(this.props.source, comment, function (data) {
                     this.setState({ data: data });
                 }.bind(this));
             },
