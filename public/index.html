@@ -26,30 +26,14 @@
         */
         
         const CommentBox = React.createClass({
-            /*
             getInitialState: function () {
-                return {
-                    this.props.data: {}
-                };
+                return { data: [] };
             },
-            */
             
             componentDidMount: function () {
-                /*
                 this.serverRequest = $.get(this.props.source, function (data) {
-                    this.setState({
-                        this.props.data: data[0]
-                    });
-                    this.props.data = data[0];
-                }.bind(this));
-                */
-                
-                console.log('in componentDidMount before ajax');
-                
-                this.serverRequest = $.get(this.props.source, function (data) {
-                    console.log('in componentDidMount ajax: ', data);
-                    this.props.data = data[0];
-                })
+                    this.setState({ data: data[0] });
+                }.bind(this));                
             },
             
             componentWillUnmount: function () {
