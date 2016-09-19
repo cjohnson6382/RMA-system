@@ -16,10 +16,14 @@
     <!-- <script type="text/babel" src="scripts/example.js"></script> -->
     <script type="text/babel">
         // tutorial.js
+        
+        //  remove hard-coded data and replace with a url in the rendering section
+        /*
         const data = [
           { id: 1, author: "Pete Hunt", text: "This is one comment" },
           { id: 2, author: "Jordan Walke", text: "This is *another* comment" }
         ];
+        */
         
         const CommentBox = React.createClass({
             render: function () {
@@ -82,7 +86,7 @@
         });
         
         ReactDOM.render(
-            <CommentBox data={ data }/>,
+            <CommentBox data="/api/comments"/>,
             document.getElementById('content')
         );
       // To get started with this tutorial running your own code, simply remove
