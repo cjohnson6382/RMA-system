@@ -15,6 +15,21 @@
     <div id="content"></div>
     <!-- <script type="text/babel" src="scripts/example.js"></script> -->
     <script type="text/babel">
+        // tutorial.js
+        const CommentBox = React.createClass({
+            render: function () {
+                return (
+                    <div className="comment box">
+                        Hellooooo world
+                    </div>
+                );
+            }
+        });
+        
+        ReactDOM.render(
+            <CommentBox />,
+            document.getElementById('content')
+        );
       // To get started with this tutorial running your own code, simply remove
       // the script tag loading scripts/example.js and start writing code here.
     </script>
