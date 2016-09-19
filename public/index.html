@@ -18,6 +18,12 @@
         // tutorial.js
         
         const CommentBox = React.createClass({
+            handleCommentSubmit: function (comment) {
+            
+                $.post(this.props.url, comment, function (data) {
+                    this.setState({ data: data });
+                }.bind(this));
+            },
             getInitialState: function () {
                 return { data: [] };
             },
@@ -40,7 +46,7 @@
                         Hellooooo world
                         <h1>Comments</h1>
                         <CommentList data={ this.state.data } />
-                        <CommentForm />
+                        <CommentForm onCommentSubmit={ this.handleCommentSubmit } />
                     </div>
                 );
             }
@@ -77,14 +83,30 @@
                 this.setState({ text: e.target.value });
             },
         
+            handleSubmit: function (e) {
+                //  browser's default action is to actually submit the form, which we don't want
+                e.preventDefault();
+                
+                const author = this.state.author.trim();
+                const text = this.state.text.trim();
+                
+                if (!text || !author) {
+                    return;
+                }
+                
+                this.props.onCommentSubmit({ author: author, text: text });
+                //  clear the form
+                this.setState({ author: '', text: ''});
+            },
+        
             render: function () {
                 return (
-                    <div className="commentForm">
-                        <h3>Add a new comment</h3>
+                    <h3>Add a new comment</h3>
+                    <form className="commentForm" onSubmit={this.handleSubmit} >
                         <input type="text" placeholder="Name" value={this.state.author} onChange={this.handleAuthorChange} />
                         <input type="text" placeholder="Comment" value={this.state.text} onChange={this.handleCommentChange} />
                         <input type="submit" value="Post" />
-                    </div>
+                    </form>
                 );
             }
         });
