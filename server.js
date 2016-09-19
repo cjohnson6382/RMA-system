@@ -73,5 +73,5 @@ app.post('/api/comments', function(req, res) {
 
 var options = {};
 http.createServer(app).listen(80, function() {
-  console.log('Server started: http://localhost:' + app.get('port') + '/');
+  console.log('Server started: http://localhost:80/);
 });
