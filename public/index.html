@@ -17,23 +17,21 @@
     <script type="text/babel">
         // tutorial.js
         
-        //  remove hard-coded data and replace with a url in the rendering section
-        /*
-        const data = [
-          { id: 1, author: "Pete Hunt", text: "This is one comment" },
-          { id: 2, author: "Jordan Walke", text: "This is *another* comment" }
-        ];
-        */
-        
         const CommentBox = React.createClass({
             getInitialState: function () {
                 return { data: [] };
             },
             
-            componentDidMount: function () {
+            loadCommentsFromServer: function () {
                 $.get(this.props.source, function (data) {
                     this.setState({ data: data });
                 }.bind(this));                
+
+            },
+            
+            componentDidMount: function () {
+                this.loadCommentsFromServer();
+                setInterval(loadCommentsFromServer, this.props.pollInterval);
             },
         
             render: function () {
@@ -96,11 +94,9 @@
         });
         
         ReactDOM.render(
-            <CommentBox source="http://cjohnson.ignorelist.com/api/comments"/>,
+            <CommentBox source="http://cjohnson.ignorelist.com/api/comments", pollInterval={2000}/>,
             document.getElementById('content')
         );
-      // To get started with this tutorial running your own code, simply remove
-      // the script tag loading scripts/example.js and start writing code here.
     </script>
   </body>
 </html>
