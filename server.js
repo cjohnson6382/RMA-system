@@ -10,6 +10,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
+var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var express = require('express');
@@ -17,8 +19,6 @@ var bodyParser = require('body-parser');
 var app = express();
 
 var COMMENTS_FILE = path.join(__dirname, 'comments.json');
-
-app.set('port', (process.env.PORT || 3000));
 
 app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -71,6 +71,7 @@ app.post('/api/comments', function(req, res) {
   });
 });
 
-
-app.listen(app.get('port'), function() {
+var options = {};
+http.createServer(app).listen(80, function() {
   console.log('Server started: http://localhost:' + app.get('port') + '/');
+});
