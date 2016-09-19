@@ -31,13 +31,9 @@
             },
             
             componentDidMount: function () {
-                this.serverRequest = $.get(this.props.source, function (data) {
+                $.get(this.props.source, function (data) {
                     this.setState({ data: data[0] });
                 }.bind(this));                
-            },
-            
-            componentWillUnmount: function () {
-                this.serverRequest.abort();
             },
         
             render: function () {
@@ -45,7 +41,7 @@
                     <div className="commentBox">
                         Hellooooo world
                         <h1>Comments</h1>
-                        <CommentList data={ this.props.data } />
+                        <CommentList data={ this.state.data } />
                         <CommentForm />
                     </div>
                 );
