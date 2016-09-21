@@ -1,3 +1,20 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>React Tutorial</title>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+    <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+    <script src="https://unpkg.com/remarkable@1.6.2/dist/remarkable.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/babel">
+
+
 //  expects this.props.source = 'http://cjohnson.ignorelist.com/api/list'
 const TicketBox = React.createClass({
     //  call this when the component is attached and then again in a callback from ticket create
@@ -18,6 +35,8 @@ const TicketBox = React.createClass({
     render: function () {
         return (
             <TicketList data={ this.state.tickets } />
+            ////////////////////////////////////////////////////////////////
+            <OpenModal />
         );
     }
 });
@@ -49,3 +68,13 @@ const NewTicket = React.createClass({
         return ();
     }
 });
+
+ReactDOM.render(
+    <TicketBox source="http://cjohnson.ignorelist.com/api/list" />,
+    document.getElementById('content')
+);
+
+
+    </script>
+  </body>
+</html>

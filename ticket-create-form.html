@@ -2,6 +2,16 @@
 //      how do I get the this.props.rma-ticket that will populate this entire thing?
 //      it's gonna be passed along either from the 'create' button or from clicking on the list
 
+//  I'm not going to use flux for commucation; it's way too much work for way too little benefit
+//      instead: when the ticket-create form submits, it's gonna call a function on the parent page with the complete create/update object arg
+//          the main page is going to send the completed object up to the server and after it gets a response
+//          it'll get an updated ticket list using the filters in place at the time that the ticket was created/updated
+//              the server only has to create/update a single ticket, so it could also theoretically get the whole ticket back
+//              when it calls the server the first time, and then stick that in the array of tickets that's being displayed
+//                  and removing the 'last' one so that the total number of displayed tickets stays consistent
+
+
+
 //  when I learn how, I'm going to have to render the properties according to the instructions on the ticket creation template
 
 const TicketSummary = React.createClass({
