@@ -1,198 +1,125 @@
-//  need to create an authentication system that checks against the database before allowing people to mess with the system
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
 
-//  RMA properties: ID (int), date (of RMA ticket creation?) (date), type (text), customer (text), drop ship (checkbox), write touch pos???, 
+const DB_URL = "mongodb://localhost:27017/rmatickets";
+const ticket_route = require('./routes/ticket_routes.js');
+const autocompletes_route = require('./routes/autocompletes.js');
 
-//      inventory: item number (int), vendor (text), serial number (int), purchase date (date), RMA type (subfields are textfields) [doa - cross ship, doa - repair & return, non-warranty - repair & return, other - see notes, return - credit, warranty - cross ship, warranty - repair & return], invoice (int), problem (textbox)
-//      customer: NO INFORMATION ON THIS TAB
-//      status: rma status (subfields) [item number (int), received (date). tracking # (int), eval (checkbox), stock (checkbox), clos? (checkbox)]
-//      other: started by (text?), notes (textbox), hold status (subfields) [item number (int), repair hold (checkbox), hold date (date), vender RMA (int?)]
-
-//  side bar: request, issue, receive, cancel, >|
-
-
-
-//  I should switch this to HTTPS
-var http = require('http');
-
+app.use('/', express.static(path.join(__dirname, 'public')));
 
 
-var fs = require('fs');
-var path = require('path');
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
+//	app.use(bodyParser.json());
+//	app.use(bodyParser.urlencoded({extended: true}));
 
-
-//  this needs to be a reference to the database handle
-//      something that you can pass as a variable to receive an object that will get put into the DB
-var COMMENTS_FILE = path.join(__dirname, 'comments.json');
-
-
-//  this is used for the comments.json file, which is obsolete
-//      gonna use this to serve other static resources though
-app.use('/resources', express.static(path.join(__dirname, 'public')));
-
-
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
-
-// middleware which sets headers.
-app.use(function(req, res, next) {
-    // Set permissive CORS header - this allows this server to be used only as
-    // an API server in conjunction with something like webpack-dev-server.
-    res.setHeader('Access-Control-Allow-Origin', '*');
-
-    // Disable caching because the server is getting hit for updated results
-    res.setHeader('Cache-Control', 'no-cache');
-    next();
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-cache');
+  next();
 });
 
-app.use(function (req, res, next) {
-    //  I need to add a module that deals with databases here
-    const mongodb = require('mongodb');
-    const MongoClient = mongodb.MongoClient;
-    const url = 'mongodb://localhost:27017/rma_tickets';
-    
-    let db = {};
-    let collection;
-    
-    MongoClient.connect(url, function (err, dbhandle) {
-        if (err) { console.log('unable to connect to mongodb', err) } else {
-            db = dbhandle;
-            collection = db.collection('tickets');
-    
+const insertdefaults = (db) => {
+  db.collection('bureaucracy').findOne({ _id: "new" })
+ 		.then((data) => {
+			assert.equal(data, null);
 
-            //////////////////////////////////////////////////////////////////////////////
-            //  only do this if db.counters doesn't have a document with _id "incrementor"
-            db.counters.insert(
-               {
-                  _id: "incrementor",
-                  seq: 0
-               }
-            )
-            
-        }
-    });
-    
-    const getNextId = function () {
-        const ret = db.counters.findAndModify(
-            {
-                query: { _id: 'incrementor' },
-                update: {$inc: { seq: 1 } },
-                new: true
-            }
-        );
-    };
-    
-    req.db.close = function () {
-        dbhandle.close();
-    };
-    
-    req.db.list = function (filter) {
-        //  might want to change the filter so that the client uses a syntax that's unrelated to the server's filter language
-        //      or at the very least, validate the filter...
-        const deferred = new Promise(function (resolve, reject) {
-            resolve(collection.find(filter));
-        });
-        
-        return deferred;
-    };
-    
-    req.db.insert = function (ticket) {
-        ticket._id = getNextId();
-        collection.insert(ticket, function (err, result) {
-            if (err) { console.log('error inserting ticket into db: ', err) } else { /* respond to client somehow */  }
-        });
-    };
-    
-    req.db.update = function (ticket) {
-        const id = ticket._id;
-        delete ticket._id;
-        collection.update({ id: id }, { $set: ticket }, function () {
-            if (err) { console.log('failed to update ticket: ', err) } else { /* send something back to teh client to indicate success */}
-        });
-    };
-    
-    req.db.remove = function (ticket) {
-        try {
-            collection.deleteOne({ id: ticket._id });
-        } catch (e) {
-            console.log('failed to delete ticket: ', e);
-        }        
-    }; 
+		  const ticket_template = {
+		    "id": "",
+		    "date": "",
+		    "type": "",
+		    "customer": "",
+		    "dropship": false,
+		    "itemnumber": "",
+		    "vendor": "",
+		    "serial": "",
+		    "purchasedate": "",
+		    "invoice": "",
+		    "problem": "",
+		    "received": false,
+		    "tracking": "",
+		    "eval": false,
+		    "stock": false,
+		    "close": false,
+		    "startedby": "",
+		    "notes": "",
+		    "repairhold": "",
+		    "holddate": "",
+		    "vendorrma": ""
+		  };
 
-    //  this might execute out of order because async; should probably make everything promises on the db handle creator    
-    next();
-});
+	   	deferred = new Promise.all([
+	   	  db.collection('bureaucracy').insertOne({ _id: "idincrementor", value: 1 }),
+	   	  db.collection('bureaucracy').insertOne({ _id: "new", data: ticket_template})
+	   	]);
 
-/*
-app.get('/api/list', function(req, res) {
-    //  this is a call to the DB that returns (all?) tickets
-    //      should take a filter or alternately return only the X most recent tickets....
-  fs.readFile(COMMENTS_FILE, function(err, data) {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-    res.json(JSON.parse(data));
-  });
-});
-*/
-
-app.post('/api/add', function(req, res) {
-    //  ticket is an object with all the properties of a complete RMA ticket
-    req.db.insert(req.body.ticket)
-        .then(function (response) { res.end(response) });
-    
-};
-app.post('/api/delete', function(req, res) {
-    req.db.remove(req.body.ticket)
-        .then(function (response) { 
-            //  silently send report to admin about deletions -- best done on client side?
-            //      no; if it's on the client side, the client can see it....
-            res.end(response) 
-        });
-};
-app.post('/api/modify', function(req, res) {
-    req.db.update(req.body.ticket)
-        .then(function (response) { res.end(response) });
+			deferred.then((values) => {
+				return values;
+			});
+		}) 
+		.then((values) => {
+    	console.log('defaults have been added to DB: ', values);
+      return ticket_template;
+	  })
+		.catch((err) => {
+			console.log('defaults are already in db');
+		});
 };
 
-app.get('/api/list', function (req. res) {
-    req.db.find(req.query.filter)
-        .then(function (response) { res.end(response) });
-});
-
-/*         
-app.post('/api/comments', function(req, res) {
-  fs.readFile(COMMENTS_FILE, function(err, data) {
-    if (err) {
-      console.error(err);
-      process.exit(1);
-    }
-    var comments = JSON.parse(data);
-    // NOTE: In a real implementation, we would likely rely on a database or
-    // some other approach (e.g. UUIDs) to ensure a globally unique id. We'll
-    // treat Date.now() as unique-enough for our purposes.
-    var newComment = {
-      id: Date.now(),
-      author: req.body.author,
-      text: req.body.text,
-    };
-    comments.push(newComment);
-    fs.writeFile(COMMENTS_FILE, JSON.stringify(comments, null, 4), function(err) {
-      if (err) {
-        console.error(err);
-        process.exit(1);
+const createIndexes = (db) => {
+  db.collection('tickets').createIndex(
+    { id: -1 },
+    null,
+    (err, res) => { console.log(res) }
+  );
+  db.collection('tickets').createIndex(
+    { date: -1 },
+    null,
+    (err, res) => { console.log(res) }
+  );
+  db.collection('tickets').createIndex(
+    { "$**": "text" },
+    {
+      name: "TextIndex",
+      weights: {
+        id: 10,
+        type: 4,
+        customer: 6,
+        itemnumber: 9,
+        vendor: 6,
+        serial: 9,
+        invoice: 9,
+        problem: 3,
+        received: 8,
+        startedby: 4,
+        notes: 4,
       }
-      res.json(comments);
-    });
-  });
-});
-*/
+    },
+    (err, res) => { console.log(res) }
+  );
+};
 
-var options = {};
-http.createServer(app).listen(80, function() {
-  console.log('Server started: http://localhost:80/);
-});
+MongoClient.connect(DB_URL)
+	.then((db) => {
+		insertdefaults(db);
+		createIndexes(db);
+		app.use((req, res, next) => {
+			req.db = db;
+			next();
+		});
+		app.use('/api/tickets', ticket_route);
+		app.use('/data', autocompletes_route);
+		return;
+	})
+	.then(() => {
+		http.createServer(app).listen(80, function() {
+		  console.log('Server started: http://localhost:80/');
+		});
+	})
+	.catch((err) => {
+		console.log(err.stack);
+	});

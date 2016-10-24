@@ -1,0 +1,180 @@
+{
+  "type": "fieldlist",
+  "options": { "name": "top" },
+  "value": [
+    {
+      "type": "field",
+      "options": { "name": "container" },
+      "value": {
+        "type": "fieldlist",
+        "options": { "name": "rmaProperties" },
+        "value": [
+          {
+            "type": "field",
+            "options": { "name": "id", "rules": { "type": "text" } },
+            "value": ""
+          },
+          {
+            "type": "field",
+            "options": { "name": "date", "rules": { "type": "date" } },
+            "value": ""
+          },
+          {
+            "type": "field",
+            "options": { "name": "type", "rules": { "type": "complextext", "format": "dropdown", "data": [] } },
+            "value": ""
+          },
+          {
+            "type": "field",
+            "options": { "name": "customer", "rules": { "type": "complextext", "format": "autocomplete", "data": "customerdb" } },
+            "value": ""
+          },
+          {
+            "type": "field",
+            "options": { "name": "dropship", "rules": { "type": "checkbox" } },
+            "value": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "fieldlist",
+      "options": { "name": "tabs", "rules": { "type": "tabs" } },
+      "value": [
+        {
+          "type": "fieldlist",
+          "options": { "name": "inventory" },
+          "value": [
+            {
+              "type": "field",
+              "options": { "name": "itemnumber", "rules": { "type": "text" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "vendor", "rules": { "type": "complextext", "format": "autocomplete", "data": "vendordb" } },
+              "value": ""
+            },
+            { 
+              "type": "field",
+              "options": { "name": "serial", "rules": { "type": "text" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "purchasedate", "rules": { "type": "date" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "type", "rules": { "type": "dropdowntext", "data": [
+                    "doa - cross ship",
+                    "doa - repair & return",
+                    "non-warranty - repair & return",
+                    "other - see notes",
+                    "return - credit",
+                    "warranty - cross ship"
+                  ]
+                }
+              },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "invoice", "rules": { "type": "checkbox" } },
+              "value": false
+            },
+            {
+              "type": "field",
+              "options": { "name": "problem", "rules": { "type": "textbox" } },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "fieldlist",
+          "options": { "name": "customer" },
+          "value": []
+        },
+        {
+          "type": "fieldlist",
+          "options": { "name": "status" },
+          "value": [
+            {
+              "type": "field",
+              "options": { "name": "itemnumber", "rules": { "type": "text" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "received", "rules": { "type": "checkbox" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "tracking", "rules": { "type": "text" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "eval", "rules": { "type": "checkbox" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "stock", "rules": { "type": "checkbox" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "close", "rules": { "type": "checkbox" } },
+              "value": ""
+            }
+          ]
+        },
+        {
+          "type": "fieldlist",
+          "options": { "name": "other" },
+          "value": [
+            {
+              "type": "field",
+              "options": { "name": "startedby", "rules": { "type": "text" } },
+              "value": ""
+            },
+            {
+              "type": "field",
+              "options": { "name": "notes", "rules": { "type": "textbox" } },
+              "value": ""
+            },
+            {
+              "type": "fieldlist",
+              "options": { "name": "holdstatus" },
+              "value": [
+                {
+                  "type": "field",
+                  "options": { "name": "itemnumber", "rules": { "type": "text" } },
+                  "value": ""
+                },
+                {
+                  "type": "field",
+                  "options": { "name": "repairhold", "rules": { "type": "text" } },
+                  "value": ""
+                },
+                {
+                  "type": "field",
+                  "options": { "name": "holddate", "rules": { "type": "date" } },
+                  "value": ""
+                },
+                {
+                  "type": "field",
+                  "options": { "name": "vendorrma", "rules": { "type": "text" } },
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

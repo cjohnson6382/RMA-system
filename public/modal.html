@@ -1,0 +1,13 @@
+<Modal.Header closeButton>
+    <Modal.Title>{ this.props.name }</Modal.Title>
+</Modal.Header>
+
+<Modal.Body>
+    <div>This is the text of the comment you clicked:</div>
+    <br />
+    { this.props.name }
+</Modal.Body>
+
+<Modal.Footer>
+    <Button onClick={this.props.onHide }>Close</Button>
+</Modal.Footer>
