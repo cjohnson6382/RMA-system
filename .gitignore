@@ -1,0 +1,5 @@
+*~
+node_modules
+.DS_Store
+db/
+reactmodal/react-tutorial-master/db/
