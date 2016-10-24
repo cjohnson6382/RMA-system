@@ -1,0 +1,80 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>React Tutorial</title>
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+    <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+    <script src="https://unpkg.com/remarkable@1.6.2/dist/remarkable.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/babel">
+
+
+//  expects this.props.source = 'http://cjohnson.ignorelist.com/api/list'
+const TicketBox = React.createClass({
+    //  call this when the component is attached and then again in a callback from ticket create
+    loadTicketsFromServer: function () {
+        $.get(this.props.source, function (tickets) {
+            this.setState({ tickets: tickets });
+        }.bind(this));
+    },
+    
+    getInitialState: function () {
+        return { tickets: [] };
+    },
+    
+    componentDidMount: function () {
+        this.loadTicketsFromServer();
+    },
+    
+    render: function () {
+        return (
+            <TicketList data={ this.state.tickets } />
+            ////////////////////////////////////////////////////////////////
+            <OpenModal />
+        );
+    }
+});
+
+const TicketList = React.createClass({
+    render: function () {
+        const ticketNodes = this.props.data.map(function (ticket) {
+            return (
+                <li>
+                    <span onClick={ openSummary(ticket) } name={ ticket.name } >
+                        {ticket.name}
+                        <span onClick={ deleteTicket(ticket._id) }>{X]</span>
+                    </span>
+                </li>
+            );
+        });
+        
+        return (
+            <div className="ticketList">
+                {ticketNodes}
+            </div>
+        );
+    }
+});
+
+//  does this send a ticket template to the ticket-create-form? it should, this'll make it seemless to work between create and modify
+const NewTicket = React.createClass({
+    render: function () {
+        return ();
+    }
+});
+
+ReactDOM.render(
+    <TicketBox source="http://cjohnson.ignorelist.com/api/list" />,
+    document.getElementById('content')
+);
+
+
+    </script>
+  </body>
+</html>
