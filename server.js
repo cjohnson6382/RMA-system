@@ -11,11 +11,7 @@ const DB_URL = "mongodb://localhost:27017/rmatickets";
 const ticket_route = require('./routes/ticket_routes.js');
 const autocompletes_route = require('./routes/autocompletes.js');
 
-app.use('/', express.static(path.join(__dirname, 'public')));
-
-
-//	app.use(bodyParser.json());
-//	app.use(bodyParser.urlencoded({extended: true}));
+app.use('/', express.static(path.join(__dirname, 'app')));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
